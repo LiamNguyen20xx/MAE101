@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đề Thi Trắc Nghiệm - Định Thức Ma Trận</title>
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(','\\)'], ['$', '$']]
+      }
+    };
+  </script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background:#f4f7fb;
+      margin:0;
+      padding:20px;
+      color:#222;
+    }
+
+    .container{
+      max-width:1100px;
+      margin:auto;
+    }
+
+    h1{
+      text-align:center;
+      color:#005a9c;
+    }
+
+    .intro{
+      background:white;
+      padding:20px;
+      border-radius:12px;
+      margin-bottom:20px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .question{
+      background:white;
+      padding:20px;
+      border-radius:12px;
+      margin-bottom:20px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .question h3{
+      color:#005a9c;
+    }
+
+    .option{
+      border:2px solid #ccc;
+      padding:12px;
+      border-radius:10px;
+      margin:10px 0;
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    .option:hover{
+      background:#eef6ff;
+    }
+
+    .correct{
+      background:#d4edda !important;
+      border-color:#28a745 !important;
+      color:#155724;
+    }
+
+    .wrong{
+      background:#f8d7da !important;
+      border-color:#dc3545 !important;
+      color:#721c24;
+    }
+
+    .disabled{
+      pointer-events:none;
+    }
+
+    .explanation{
+      margin-top:15px;
+      padding:15px;
+      border-left:5px solid #005a9c;
+      background:#eef6ff;
+      display:none;
+      border-radius:8px;
+    }
+
+    .tip{
+      margin-top:10px;
+      background:#fff8d6;
+      border-left:5px solid #ffc107;
+      padding:10px;
+      border-radius:8px;
+    }
+
+    .scoreBox{
+      position:sticky;
+      top:10px;
+      background:#005a9c;
+      color:white;
+      padding:15px;
+      border-radius:10px;
+      margin-bottom:20px;
+      text-align:center;
+      font-size:20px;
+      z-index:100;
+    }
+
+    .level{
+      padding:6px 12px;
+      border-radius:20px;
+      color:white;
+      font-size:14px;
+      display:inline-block;
+      margin-bottom:10px;
+    }
+
+    .easy{
+      background:#28a745;
+    }
+
+    .medium{
+      background:#ff9800;
+    }
+
+    .hard{
+      background:#dc3545;
+    }
+
+    .theory{
+      background:#6f42c1;
+    }
+
+    button{
+      background:#005a9c;
+      color:white;
+      border:none;
+      padding:12px 20px;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:16px;
+      margin-top:20px;
+    }
+
+    button:hover{
+      background:#003f70;
+    }
+
+    .footer{
+      text-align:center;
+      margin-top:30px;
+      color:#555;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>ĐỀ THI TRẮC NGHIỆM TƯƠNG TÁC<br>ĐỊNH THỨC MA TRẬN</h1>
+
+  <div class="intro">
+    <h2>Mô tả</h2>
+    <ul>
+      <li>5 câu lý thuyết</li>
+      <li>5 câu dễ</li>
+      <li>5 câu trung bình</li>
+      <li>5 câu khó</li>
+      <li>Tổng cộng: 20 câu</li>
+      <li>Bấm vào đáp án để kiểm tra ngay.</li>
+      <li>Đúng → hiện màu xanh.</li>
+      <li>Sai → hiện màu đỏ + hiển thị đáp án đúng.</li>
+      <li>Mỗi câu đều có lời giải thích và mẹo làm nhanh.</li>
+    </ul>
+  </div>
+
+  <div class="scoreBox">
+    Điểm hiện tại:
+    <span id="score">0</span> / 20
+  </div>
+
+  <div id="quiz"></div>
+
+  <div class="footer">
+    <h3>Hoàn thành bài thi 🎉</h3>
+    <p>Định thức không chỉ là một con số — nó kể câu chuyện về sự biến đổi không gian.</p>
+  </div>
+
+</div>
+
+<script>
+
+const questions = [
+
+/* =========================
+   LÝ THUYẾT
+========================= */
+
+{
+type:"Lý thuyết",
+level:"theory",
+question:"Ý nghĩa hình học của định thức ma trận \\(2\\times2\\) là gì?",
+options:[
+"Chu vi hình bình hành",
+"Diện tích có dấu của hình bình hành",
+"Độ dài vector",
+"Góc giữa hai vector"
+],
+correct:1,
+explanation:"Định thức của ma trận \\(2\\times2\\) biểu diễn diện tích có dấu của hình bình hành tạo bởi hai vector cột.",
+tip:"Nếu đề hỏi ý nghĩa hình học của determinant 2x2 → nghĩ ngay đến diện tích."
+},
+
+{
+type:"Lý thuyết",
+level:"theory",
+question:"Nếu \\(\\det(A)=0\\), điều gì xảy ra?",
+options:[
+"Ma trận khả nghịch",
+"Ma trận là đơn vị",
+"Không gian bị suy biến",
+"Ma trận đối xứng"
+],
+correct:2,
+explanation:"\\(\\det(A)=0\\) nghĩa là phép biến đổi làm bẹp không gian xuống chiều thấp hơn.",
+tip:"Det = 0 → không nghịch đảo → phụ thuộc tuyến tính."
+},
+
+{
+type:"Lý thuyết",
+level:"theory",
+question:"Tính chất đúng của định thức là:",
+options:[
+"\\(\\det(A+B)=\\det(A)+\\det(B)\\)",
+"\\(\\det(AB)=\\det(A)\\det(B)\\)",
+"\\(\\det(A^2)=2\\det(A)\\)",
+"\\(\\det(A^{-1})=0\\)"
+],
+correct:1,
+explanation:"Định thức có tính chất nhân: determinant của tích bằng tích determinant.",
+tip:"Chỉ có phép nhân ma trận mới tương thích với determinant."
+},
+
+{
+type:"Lý thuyết",
+level:"theory",
+question:"Định thức âm cho biết điều gì?",
+options:[
+"Không gian bị mất",
+"Ma trận không vuông",
+"Phép biến đổi có lật hướng",
+"Ma trận không tồn tại"
+],
+correct:2,
+explanation:"Determinant âm biểu thị phép biến đổi đảo orientation (lật gương).",
+tip:"Det âm → mirror reflection."
+},
+
+{
+type:"Lý thuyết",
+level:"theory",
+question:"Định thức bằng tích của gì?",
+options:[
+"Các phần tử trên đường chéo",
+"Tổng các trị riêng",
+"Tích các trị riêng",
+"Tổng các vector riêng"
+],
+correct:2,
+explanation:"\\(\\det(A)=\\lambda_1\\lambda_2...\\lambda_n\\)",
+tip:"Trace = tổng trị riêng, determinant = tích trị riêng."
+},
+
+/* =========================
+   DỄ
+========================= */
+
+{
+type:"Dễ",
+level:"easy",
+question:"Tính \\(\\det\\begin{pmatrix}2&1\\\\3&4\\end{pmatrix}\\)",
+options:["5","8","3","11"],
+correct:0,
+explanation:"\\(2\\cdot4-1\\cdot3=8-3=5\\)",
+tip:"2x2 luôn dùng công thức: \\(ad-bc\\)"
+},
+
+{
+type:"Dễ",
+level:"easy",
+question:"Tính \\(\\det\\begin{pmatrix}1&2\\\\2&4\\end{pmatrix}\\)",
+options:["0","2","4","-2"],
+correct:0,
+explanation:"\\(1\\cdot4-2\\cdot2=4-4=0\\)",
+tip:"Hai hàng tỉ lệ → determinant bằng 0."
+},
+
+{
+type:"Dễ",
+level:"easy",
+question:"Tính \\(\\det(I_3)\\)",
+options:["0","1","3","-1"],
+correct:1,
+explanation:"Ma trận đơn vị không làm thay đổi thể tích nên determinant bằng 1.",
+tip:"Identity matrix luôn có determinant = 1."
+},
+
+{
+type:"Dễ",
+level:"easy",
+question:"Nếu đổi chỗ hai hàng của ma trận thì determinant:",
+options:[
+"Không đổi",
+"Nhân đôi",
+"Đổi dấu",
+"Bằng 0"
+],
+correct:2,
+explanation:"Đổi hai hàng làm orientation đổi chiều nên determinant đổi dấu.",
+tip:"Swap hàng ↔ đổi dấu determinant."
+},
+
+{
+type:"Dễ",
+level:"easy",
+question:"Nếu nhân một hàng với 5 thì determinant:",
+options:[
+"Không đổi",
+"Nhân 5",
+"Chia 5",
+"Bằng 0"
+],
+correct:1,
+explanation:"Determinant co giãn theo hệ số nhân hàng.",
+tip:"Nhân hàng với k → determinant nhân k."
+},
+
+/* =========================
+   TRUNG BÌNH
+========================= */
+
+{
+type:"Trung bình",
+level:"medium",
+question:"Tính \\(\\det\\begin{pmatrix}3&2\\\\1&5\\end{pmatrix}\\)",
+options:["13","15","11","17"],
+correct:0,
+explanation:"\\(3\\cdot5-2\\cdot1=15-2=13\\)",
+tip:"Luôn nhân đường chéo chính trước."
+},
+
+{
+type:"Trung bình",
+level:"medium",
+question:"Cho \\(\\det(A)=2\\), \\(\\det(B)=5\\). Tính \\(\\det(AB)\\).",
+options:["7","10","3","25"],
+correct:1,
+explanation:"\\(\\det(AB)=\\det(A)\\det(B)=2\\cdot5=10\\)",
+tip:"Determinant của tích = tích determinant."
+},
+
+{
+type:"Trung bình",
+level:"medium",
+question:"Cho ma trận \\(A=\\begin{pmatrix}1&0\\\\0&-1\\end{pmatrix}\\). Determinant là:",
+options:["1","-1","0","2"],
+correct:1,
+explanation:"\\(1\\cdot(-1)-0=-1\\)",
+tip:"Det âm → phép lật trục."
+},
+
+{
+type:"Trung bình",
+level:"medium",
+question:"Nếu \\(\\det(A)=4\\), thì \\(\\det(A^{-1})\\) bằng:",
+options:["4","-4","1/4","0"],
+correct:2,
+explanation:"\\(\\det(A^{-1})=\\frac1{\\det(A)}\\)",
+tip:"Nghịch đảo → determinant đảo ngược."
+},
+
+{
+type:"Trung bình",
+level:"medium",
+question:"Điều kiện để dùng công thức Cramer là:",
+options:[
+"\\(\\det(A)=0\\)",
+"\\(A\\) không vuông",
+"\\(\\det(A)\\neq0\\)",
+"\\(A\\) đối xứng"
+],
+correct:2,
+explanation:"Cramer chỉ áp dụng khi ma trận khả nghịch.",
+tip:"Cramer cần chia determinant → determinant không được bằng 0."
+},
+
+/* =========================
+   KHÓ
+========================= */
+
+{
+type:"Khó",
+level:"hard",
+question:"Tính \\(\\det\\begin{pmatrix}1&2&3\\\\0&1&4\\\\5&6&0\\end{pmatrix}\\)",
+options:["1","-1","5","10"],
+correct:0,
+explanation:"Khai triển hoặc dùng quy tắc Sarrus sẽ được determinant = 1.",
+tip:"Ma trận 3x3 → Sarrus rất nhanh."
+},
+
+{
+type:"Khó",
+level:"hard",
+question:"Nếu tất cả phần tử của một hàng đều bằng 0 thì determinant:",
+options:["1","Không xác định","0","Âm"],
+correct:2,
+explanation:"Một hàng zero làm thể tích bằng 0.",
+tip:"Có hàng 0 → determinant = 0 ngay lập tức."
+},
+
+{
+type:"Khó",
+level:"hard",
+question:"Cho trị riêng của ma trận là \\(2,3,-1\\). Determinant bằng:",
+options:["4","-6","6","-5"],
+correct:1,
+explanation:"Determinant là tích trị riêng: \\(2\\cdot3\\cdot(-1)=-6\\)",
+tip:"Không cần ma trận — chỉ cần nhân trị riêng."
+},
+
+{
+type:"Khó",
+level:"hard",
+question:"Cho \\(\\det(A)=3\\). Nếu nhân toàn bộ ma trận \\(A\\) cấp 3 với 2 thì determinant mới là:",
+options:["6","12","24","8"],
+correct:2,
+explanation:"Ma trận cấp 3: determinant nhân với \\(2^3=8\\). Nên mới là \\(3\\cdot8=24\\).",
+tip:"Nhân toàn ma trận với k → determinant nhân \\(k^n\\)."
+},
+
+{
+type:"Khó",
+level:"hard",
+question:"Nếu hai cột của ma trận giống hệt nhau thì:",
+options:[
+"Determinant dương",
+"Determinant âm",
+"Determinant bằng 0",
+"Không kết luận được"
+],
+correct:2,
+explanation:"Hai cột giống nhau → phụ thuộc tuyến tính → determinant = 0.",
+tip:"Hai hàng/cột tỉ lệ → determinant bằng 0."
+}
+
+];
+
+const quiz = document.getElementById("quiz");
+let score = 0;
+
+questions.forEach((q,index)=>{
+
+  const div = document.createElement("div");
+  div.className = "question";
+
+  div.innerHTML = `
+    <div class="level ${q.level}">
+      ${q.type}
+    </div>
+
+    <h3>Câu ${index+1}</h3>
+
+    <p>${q.question}</p>
+
+    <div class="options"></div>
+
+    <div class="explanation">
+      <strong>Giải thích:</strong><br>
+      ${q.explanation}
+
+      <div class="tip">
+        <strong>Mẹo làm nhanh:</strong><br>
+        ${q.tip}
+      </div>
+    </div>
+  `;
+
+  const optionsDiv = div.querySelector(".options");
+
+  q.options.forEach((opt,i)=>{
+
+    const btn = document.createElement("div");
+    btn.className = "option";
+    btn.innerHTML = `${String.fromCharCode(65+i)}. ${opt}`;
+
+    btn.onclick = ()=>{
+
+      const all = optionsDiv.querySelectorAll(".option");
+
+      all.forEach(o=>o.classList.add("disabled"));
+
+      if(i===q.correct){
+
+        btn.classList.add("correct");
+        score++;
+
+        document.getElementById("score").innerText = score;
+
+      }else{
+
+        btn.classList.add("wrong");
+        all[q.correct].classList.add("correct");
+
+      }
+
+      div.querySelector(".explanation").style.display = "block";
+
+      if(window.MathJax){
+        MathJax.typesetPromise();
+      }
+    };
+
+    optionsDiv.appendChild(btn);
+
+  });
+
+  quiz.appendChild(div);
+
+});
+
+</script>
+
+</body>
+</html>
