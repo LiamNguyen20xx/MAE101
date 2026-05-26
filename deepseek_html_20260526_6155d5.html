@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Trắc nghiệm: Đạo hàm hàm ẩn (Implicit Differentiation)</title>
+    <!-- Cấu hình MathJax 3 chuẩn để hiển thị công thức toán học -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                packages: {'[+]': ['ams', 'newcommand']}
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                ignoreHtmlClass: 'no-mathjax'
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f0f7ff;
+            font-family: 'Segoe UI', 'Arial', 'Times New Roman', serif;
+            padding: 20px;
+            color: #1e2a3e;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 20px 25px 40px 25px;
+        }
+
+        h1 {
+            color: #005aa0;
+            border-left: 7px solid #b42c5a;
+            padding-left: 20px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .sub {
+            color: #2c5282;
+            margin-bottom: 30px;
+            font-style: italic;
+            padding-left: 27px;
+            border-bottom: 1px solid #cbd5e0;
+            padding-bottom: 12px;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            align-items: center;
+            background: #eef2ff;
+            padding: 12px 18px;
+            border-radius: 60px;
+        }
+
+        .filter-btn {
+            background: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-family: inherit;
+        }
+
+        .filter-btn.active {
+            background: #005aa0;
+            color: white;
+        }
+
+        .question-card {
+            background: #ffffff;
+            border-radius: 24px;
+            margin-bottom: 28px;
+            padding: 20px 24px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.05);
+            border: 1px solid #e2edf7;
+            transition: all 0.1s ease;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .q-level {
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 30px;
+            background: #e9ecef;
+        }
+
+        .level-easy { background: #d4edda; color: #155724; }
+        .level-medium { background: #fff3cd; color: #856404; }
+        .level-hard { background: #f8d7da; color: #721c24; }
+        .level-theory { background: #cfe2ff; color: #004085; }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin: 12px 0 16px;
+            line-height: 1.45;
+        }
+
+        /* Hỗ trợ hiển thị công thức trong câu hỏi */
+        .question-text mjx-container {
+            display: inline;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 12px 0 15px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #f9fafc;
+            padding: 10px 16px;
+            border-radius: 20px;
+            border: 1px solid #dce5ef;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .option:hover {
+            background: #eef3fc;
+        }
+
+        .opt-letter {
+            font-weight: bold;
+            background: #e2e8f0;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            flex-shrink: 0;
+        }
+
+        .opt-text {
+            flex: 1;
+        }
+
+        /* Đảm bảo công thức trong option hiển thị đúng */
+        .opt-text mjx-container {
+            display: inline;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 14px 18px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            display: none;
+            border-left: 5px solid;
+        }
+
+        .feedback.correct {
+            display: block;
+            background: #e6f9ed;
+            border-left-color: #2b9348;
+            color: #14532d;
+        }
+
+        .feedback.wrong {
+            display: block;
+            background: #ffeae9;
+            border-left-color: #d00000;
+            color: #9b1d20;
+        }
+
+        .answer-detail {
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .tip {
+            background: #fff7e0;
+            padding: 6px 12px;
+            border-radius: 14px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            border-left: 3px solid #f4c542;
+        }
+
+        .status-badge {
+            font-size: 0.7rem;
+            background: #dee2e6;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        button {
+            background: none;
+            border: none;
+        }
+
+        .footer-actions {
+            margin-top: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn {
+            background: #005aa0;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn.reset {
+            background: #5a626e;
+        }
+
+        .btn.download {
+            background: #2c6e2c;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: scale(0.98);
+        }
+
+        .score-area {
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: #e9f0fa;
+            padding: 8px 22px;
+            border-radius: 40px;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 16px;
+            }
+            .question-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📐 ĐẠO HÀM CỦA HÀM ẨN</h1>
+    <div class="sub">Implicit Differentiation – 20 câu trắc nghiệm có giải thích & mẹo làm nhanh</div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">📋 Tất cả (20)</button>
+        <button class="filter-btn" data-filter="theory">📘 Lý thuyết (5)</button>
+        <button class="filter-btn" data-filter="easy">🟢 Dễ (5)</button>
+        <button class="filter-btn" data-filter="medium">🟡 Trung bình (5)</button>
+        <button class="filter-btn" data-filter="hard">🔴 Khó (5)</button>
+    </div>
+
+    <div id="questions-container"></div>
+
+    <div class="footer-actions">
+        <div class="score-area" id="scoreDisplay">✅ Điểm số: 0 / 20</div>
+        <div>
+            <button class="btn reset" id="resetBtn">⟳ Làm lại toàn bộ</button>
+            <button class="btn download" id="downloadBtn">📥 Tải file HTML (đề + đáp án)</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // 20 CÂU HỎI (5 lý thuyết, 5 dễ, 5 trung bình, 5 khó)
+    // Mỗi câu có: text, options (mảng 4 đáp án), correct (0-3),
+    // level: 'theory','easy','medium','hard', explanation, tip
+    // Tất cả công thức đều dùng cú pháp LaTeX trong dấu $...$ hoặc $$...$$
+    // --------------------------------------------------------------
+    const questions = [
+        // === LÝ THUYẾT (5 câu) ===
+        { text: "Hàm số nào sau đây được gọi là hàm ẩn (implicit function)?", options: ["$y = 3x^2 + 2$", "$y = e^{x}$", "$x^2 + y^2 = 9$", "$y = \\ln x$"], correct: 2, level: "theory", explanation: "Hàm ẩn có dạng phương trình $F(x,y)=0$, $x$ và $y$ trộn lẫn không tách riêng. $x^2+y^2=9$ là phương trình đường tròn, không thể viết thành $y = f(x)$ một cách đơn giản.", tip: "Nếu không thể viết thành $y = f(x)$ rõ ràng ngay, rất có thể là hàm ẩn." },
+        { text: "Khi lấy đạo hàm hai vế phương trình hàm ẩn $F(x,y)=0$ theo $x$, với số hạng chứa $y$, ta dùng quy tắc nào?", options: ["Quy tắc thương", "Quy tắc dây chuyền (chain rule)", "Quy tắc lũy thừa", "Đạo hàm bằng 0"], correct: 1, level: "theory", explanation: "Vì $y$ là hàm của $x$, nên $\\frac{d}{dx}g(y)=g'(y)\\cdot y'$.", tip: "Nhớ: đạo hàm $y$ là $y'$, đạo hàm $y^n$ thành $n y^{n-1} y'$." },
+        { text: "Cho phương trình $F(x,y)=0$, công thức tổng quát của đạo hàm hàm ẩn $y'$ là (với $F_y \\neq 0$):", options: ["$y' = -\\frac{F_y}{F_x}$", "$y' = \\frac{F_x}{F_y}$", "$y' = -\\frac{F_x}{F_y}$", "$y' = \\frac{F_y}{F_x}$"], correct: 2, level: "theory", explanation: "Định lý hàm ẩn: $\\frac{dy}{dx} = -\\frac{\\partial F/\\partial x}{\\partial F/\\partial y}$.", tip: "Ghi nhớ: dấu trừ, đạo hàm riêng theo $x$ trên đạo hàm riêng theo $y$." },
+        { text: "Trong hai bước tìm đạo hàm hàm ẩn theo bài giảng, bước thứ hai là:", options: ["Đạo hàm từng số hạng", "Nhóm $y'$ và chuyển vế, chia", "Thay số cụ thể", "Rút gọn biểu thức"], correct: 1, level: "theory", explanation: "Bước 1: đạo hàm hai vế; Bước 2: nhóm các số hạng chứa $y'$ và giải tìm $y'$.", tip: "Luôn đưa tất cả $y'$ về một bên, phần còn lại sang bên kia." },
+        { text: "Khi đạo hàm $\\frac{d}{dx}( \\sin y )$, kết quả đúng là:", options: ["$\\cos y$", "$\\cos y \\cdot y'$", "$-\\sin y \\cdot y'$", "$\\sin y \\cdot y'$"], correct: 1, level: "theory", explanation: "$\\frac{d}{dx}\\sin y = \\cos y \\cdot \\frac{dy}{dx} = y'\\cos y$.", tip: "Chain rule: đạo hàm ngoài nhân đạo hàm trong." },
+        
+        // === DỄ (5 câu) ===
+        { text: "Cho $x^2 + y^2 = 25$. Tìm $y'$.", options: ["$\\frac{x}{y}$", "$-\\frac{x}{y}$", "$\\frac{y}{x}$", "$-\\frac{y}{x}$"], correct: 1, level: "easy", explanation: "Đạo hàm 2 vế: $2x + 2y y' = 0 \\Rightarrow y' = -\\frac{x}{y}$.", tip: "Đường tròn: đạo hàm nhanh bằng cách đưa $x,y$ về hai vế." },
+        { text: "Cho phương trình $x^3 + y^3 = 1$. Tìm $y'$.", options: ["$-\\frac{x^2}{y^2}$", "$\\frac{x^2}{y^2}$", "$-\\frac{3x^2}{3y^2}$", "$\\frac{3x^2}{3y^2}$"], correct: 0, level: "easy", explanation: "Đạo hàm: $3x^2 + 3y^2 y' = 0 \\Rightarrow y' = -\\frac{x^2}{y^2}$.", tip: "Rút gọn hệ số 3, nhớ dấu trừ." },
+        { text: "Tìm $y'$ của $xy = 1$.", options: ["$-\\frac{1}{x^2}$", "$\\frac{1}{x}$", "$-\\frac{y}{x}$", "$\\frac{x}{y}$"], correct: 2, level: "easy", explanation: "Đạo hàm: $y + x y' = 0 \\Rightarrow y' = -\\frac{y}{x}$. Vì $y=1/x$ nên $y' = -1/x^2$ cũng đúng dạng.", tip: "Quy tắc tích: $(xy)' = y + xy'$. Kết quả giữ nguyên $y$ và $x$." },
+        { text: "Cho $y^2 = 4x$. Tính $y'$ theo $x,y$.", options: ["$\\frac{2}{y}$", "$\\frac{1}{y}$", "$-\\frac{2}{y}$", "$\\frac{4}{y}$"], correct: 0, level: "easy", explanation: "Đạo hàm: $2y y' = 4 \\Rightarrow y' = \\frac{2}{y}$.", tip: "Đạo hàm hai vế, chú ý $y$ là hàm." },
+        { text: "Với phương trình $\\sin y = x$, tìm $y'$.", options: ["$\\sec y$", "$\\cos y$", "$\\frac{1}{\\cos y}$", "$-\\cos y$"], correct: 2, level: "easy", explanation: "$\\cos y \\cdot y' = 1 \\Rightarrow y' = \\frac{1}{\\cos y} = \\sec y$.", tip: "Đạo hàm $\\sin y = \\cos y \\cdot y'$, giải đơn giản." },
+        
+        // === TRUNG BÌNH (5 câu) ===
+        { text: "Tìm $y'$ biết $x^2 y + y^2 = 3x$.", options: ["$\\frac{3 - 2xy}{x^2 + 2y}$", "$\\frac{3 - 2xy}{x^2 + y}$", "$\\frac{2xy - 3}{x^2 + 2y}$", "$\\frac{3 - 2x}{x^2 + 2y}$"], correct: 0, level: "medium", explanation: "Đạo hàm: $2xy + x^2 y' + 2y y' = 3$ ⇒ $x^2 y' + 2y y' = 3 - 2xy$ ⇒ $y'(x^2+2y)=3-2xy$ ⇒ $y'=\\frac{3-2xy}{x^2+2y}$.", tip: "Nhóm $y'$ cẩn thận, quy tắc tích cho $x^2 y$." },
+        { text: "Cho $e^{xy} = x + y$. Tìm $y'$.", options: ["$\\frac{1 - y e^{xy}}{x e^{xy} - 1}$", "$\\frac{1 - y e^{xy}}{x e^{xy} + 1}$", "$\\frac{y e^{xy} - 1}{1 - x e^{xy}}$", "$\\frac{1 - e^{xy}}{x e^{xy} -1}$"], correct: 0, level: "medium", explanation: "Đạo hàm: $e^{xy}(y + x y') = 1 + y'$ ⇒ $y e^{xy} + x e^{xy} y' = 1 + y'$ ⇒ $x e^{xy} y' - y' = 1 - y e^{xy}$ ⇒ $y'(x e^{xy} - 1) = 1 - y e^{xy}$ ⇒ $y' = \\frac{1 - y e^{xy}}{x e^{xy} - 1}$.", tip: "Đạo hàm $e^{u}$ nhân đạo hàm $u$." },
+        { text: "Tìm hệ số góc tiếp tuyến của đường cong $x^2 - xy + y^2 = 7$ tại điểm $(2,3)$.", options: ["$\\frac{1}{4}$", "$-\\frac{1}{4}$", "$\\frac{4}{3}$", "$-\\frac{4}{3}$"], correct: 1, level: "medium", explanation: "Đạo hàm: $2x - (y + x y') + 2y y' = 0$ ⇒ $2x - y - x y' + 2y y'=0$ ⇒ $y'(2y - x) = y - 2x$ ⇒ $y' = \\frac{y-2x}{2y-x}$. Tại $(2,3)$: $y'=\\frac{3-4}{6-2}=\\frac{-1}{4}$.", tip: "Thay điểm sau khi tính đạo hàm tổng quát." },
+        { text: "Cho $x^3 + 3x^2y + y^3 = 1$. Biểu thức $y'$ là:", options: ["$\\frac{-3x^2 -6xy}{3x^2+3y^2}$", "$\\frac{-3x^2-6xy-y^2}{3x^2+2xy+3y^2}$", "$\\frac{-3x^2-6xy}{3x^2+2xy}$", "$\\frac{-3x^2 - y^2}{3x^2+2xy+3y^2}$"], correct: 1, level: "medium", explanation: "Đạo hàm từ bài giảng gốc: $3x^2 + 6xy + 3x^2 y' + 2xy y' + y^2 + 3y^2 y' = 0$ ⇒ nhóm $y'$: $y'(3x^2+2xy+3y^2) = -3x^2 -6xy - y^2$.", tip: "Nhớ đạo hàm $y^2 x$ cho $2xy y' + y^2$." },
+        { text: "Tìm $y'$ của phương trình $\\ln(xy) = x^2$.", options: ["$\\frac{2x^2 y - y}{x}$", "$\\frac{2x^2 y - 1}{x}$", "$2xy - \\frac{y}{x}$", "$\\frac{2x^2 y}{x} - \\frac{1}{x}$"], correct: 0, level: "medium", explanation: "$\\ln x + \\ln y = x^2$ ⇒ $\\frac{1}{x} + \\frac{y'}{y} = 2x$ ⇒ $\\frac{y'}{y} = 2x - \\frac{1}{x}$ ⇒ $y' = y(2x - \\frac{1}{x}) = 2xy - \\frac{y}{x} = \\frac{2x^2 y - y}{x}$.", tip: "Biến đổi log về tổng trước khi đạo hàm sẽ dễ hơn." },
+        
+        // === KHÓ (5 câu) ===
+        { text: "Tìm $y'$ tại điểm $(1,1)$ biết $x \\sin y + y \\cos x = \\sin 1 + \\cos 1$.", options: ["$0$", "$1$", "$-1$", "$\\frac{\\pi}{2}$"], correct: 0, level: "hard", explanation: "Đạo hàm: $\\sin y + x \\cos y \\cdot y' + y' \\cos x - y \\sin x = 0$. Tại $(1,1)$: $\\sin 1 + 1\\cdot \\cos 1 \\cdot y' + y' \\cos 1 - 1\\cdot \\sin 1 = 0$ ⇒ $(\\cos 1 + \\cos 1)y' = 0$ ⇒ $2\\cos 1 y' = 0 \\Rightarrow y'=0$.", tip: "Thế tọa độ trước khi rút gọn, nhiều số hạng triệt tiêu." },
+        { text: "Cho $x^2 y^3 + \\cos(x+y) = 0$. Tìm $y'$.", options: ["$\\frac{-2xy^3 + \\sin(x+y)}{3x^2 y^2 - \\sin(x+y)}$", "$\\frac{-2xy^3 - \\sin(x+y)}{3x^2 y^2 + \\sin(x+y)}$", "$\\frac{2xy^3 - \\sin(x+y)}{3x^2 y^2 + \\sin(x+y)}$", "$\\frac{-2xy^3 + \\sin(x+y)}{3x^2 y^2 + \\sin(x+y)}$"], correct: 0, level: "hard", explanation: "Đạo hàm: $2x y^3 + x^2 \\cdot 3y^2 y' - \\sin(x+y)(1+y') = 0$ ⇒ $2xy^3 + 3x^2 y^2 y' - \\sin(x+y) - \\sin(x+y) y' = 0$ ⇒ $y'(3x^2 y^2 - \\sin(x+y)) = \\sin(x+y) - 2xy^3$ ⇒ $y' = \\frac{\\sin(x+y)-2xy^3}{3x^2 y^2 - \\sin(x+y)} = \\frac{-2xy^3 + \\sin(x+y)}{3x^2 y^2 - \\sin(x+y)}$.", tip: "Cẩn thận đạo hàm $\\cos$ thành $-\\sin$, áp dụng quy tắc dây chuyền cho $\\cos(x+y)$." },
+        { text: "Tìm $y''$ (đạo hàm cấp 2) của hàm ẩn cho bởi $x^2 + y^2 = 1$ tại điểm $y>0$.", options: ["$-\\frac{1}{y^3}$", "$\\frac{1}{y^3}$", "$-\\frac{x}{y^3}$", "$\\frac{x}{y^3}$"], correct: 0, level: "hard", explanation: "Ta có $y' = -x/y$. Đạo hàm tiếp: $y'' = -\\frac{y - x y'}{y^2} = -\\frac{y - x(-x/y)}{y^2} = -\\frac{y + x^2/y}{y^2} = -\\frac{y^2 + x^2}{y^3} = -\\frac{1}{y^3}$ (vì $x^2+y^2=1$).", tip: "Dùng quy tắc thương kết hợp với $x^2+y^2=1$ để rút gọn." },
+        { text: "Cho $y$ xác định bởi $\\tan(xy) = y$. Tính $y'$ tại $x=0, y=0$.", options: ["$0$", "$1$", "$2$", "Không xác định"], correct: 0, level: "hard", explanation: "Đạo hàm: $\\sec^2(xy)(y + x y') = y'$ ⇒ tại $(0,0)$: $\\sec^2(0)(0+0) = y'$ ⇒ $1\\cdot 0 = y' \\Rightarrow y'=0$.", tip: "Nhiều bài thế điểm $(0,0)$ làm triệt tiêu, cần thận trọng." },
+        { text: "Cho phương trình $y^5 + 2x^3y^2 + x^4 = 5$. Tính giá trị $y'$ tại điểm $(1,1)$.", options: ["$-\\frac{10}{9}$", "$-\\frac{7}{9}$", "$-\\frac{5}{9}$", "$\\frac{5}{9}$"], correct: 0, level: "hard", explanation: "Đạo hàm: $5y^4 y' + 6x^2 y^2 + 2x^3 \\cdot 2y y' + 4x^3 = 0$ ⇒ thế $x=1,y=1$: $5y' + 6 + 4y' + 4 = 0$ ⇒ $9y' +10=0$ ⇒ $y' = -10/9$.", tip: "Đạo hàm từng hạng tử: $2x^3y^2$ là tích cần quy tắc tích và dây chuyền." }
+    ];
+
+    // Lưu trữ trạng thái trả lời
+    let userAnswers = new Array(questions.length).fill(null);
+    let answerStatus = new Array(questions.length).fill(false);
+    let currentFilter = "all";
+
+    // Hàm render lại toàn bộ và kích hoạt MathJax để gõ công thức mới
+    function renderQuestions() {
+        const container = document.getElementById("questions-container");
+        let filteredIndices = [];
+        for (let i = 0; i < questions.length; i++) {
+            const q = questions[i];
+            if (currentFilter === "all") filteredIndices.push(i);
+            else if (currentFilter === "theory" && q.level === "theory") filteredIndices.push(i);
+            else if (currentFilter === "easy" && q.level === "easy") filteredIndices.push(i);
+            else if (currentFilter === "medium" && q.level === "medium") filteredIndices.push(i);
+            else if (currentFilter === "hard" && q.level === "hard") filteredIndices.push(i);
+        }
+
+        let html = "";
+        for (let idx of filteredIndices) {
+            const q = questions[idx];
+            const selectedOpt = userAnswers[idx];
+            const isAnswered = answerStatus[idx];
+            const levelClass = q.level === 'theory' ? 'level-theory' : (q.level === 'easy' ? 'level-easy' : (q.level === 'medium' ? 'level-medium' : 'level-hard'));
+            let levelName = q.level === 'theory' ? "Lý thuyết" : (q.level === 'easy' ? "Dễ" : (q.level === 'medium' ? "Trung bình" : "Khó"));
+            html += `<div class="question-card" data-qid="${idx}">
+                        <div class="question-header">
+                            <span class="q-level ${levelClass}">${levelName}</span>
+                            <span class="status-badge">${isAnswered ? (userAnswers[idx] === q.correct ? "✓ Đã làm" : "✗ Đã trả lời") : "⏳ Chưa trả lời"}</span>
+                        </div>
+                        <div class="question-text">${idx+1}. ${q.text}</div>
+                        <div class="options">`;
+            const letters = ["A", "B", "C", "D"];
+            for (let optIdx = 0; optIdx < q.options.length; optIdx++) {
+                let isSelected = (selectedOpt === optIdx);
+                let bgStyle = "";
+                if (isAnswered && isSelected) {
+                    bgStyle = (selectedOpt === q.correct) ? "background: #c8f0d1; border-color:#2b9348;" : "background: #ffd9d7; border-color:#d00000;";
+                } else if (isAnswered && optIdx === q.correct && userAnswers[idx] !== null) {
+                    bgStyle = "background: #c8f0d1; border-color:#2b9348;";
+                }
+                html += `<div class="option" data-qidx="${idx}" data-optidx="${optIdx}" style="${bgStyle}">
+                            <span class="opt-letter">${letters[optIdx]}</span>
+                            <span class="opt-text">${q.options[optIdx]}</span>
+                         </div>`;
+            }
+            html += `</div><div class="feedback ${isAnswered ? (userAnswers[idx] === q.correct ? "correct" : "wrong") : ""}" id="fb-${idx}">`;
+            if (isAnswered) {
+                const isCorrect = (userAnswers[idx] === q.correct);
+                html += `<div class="answer-detail">📌 <strong>Đáp án đúng: ${letters[q.correct]}</strong> – ${q.options[q.correct]}</div>`;
+                html += `<div><strong>💡 Giải thích:</strong> ${q.explanation}</div>`;
+                html += `<div class="tip">⚡ Mẹo nhanh: ${q.tip}</div>`;
+            } else {
+                html += `<div>⏳ Chọn một đáp án để xem giải thích và mẹo.</div>`;
+            }
+            html += `</div></div>`;
+        }
+        container.innerHTML = html;
+        
+        // Kích hoạt MathJax để render các công thức vừa thêm vào DOM
+        if (window.MathJax) {
+            MathJax.typesetPromise().catch(err => console.log(err));
+        }
+        
+        attachOptionEvents();
+        updateScore();
+    }
+
+    function attachOptionEvents() {
+        const options = document.querySelectorAll(".option");
+        options.forEach(opt => {
+            opt.removeEventListener("click", optionClickHandler);
+            opt.addEventListener("click", optionClickHandler);
+        });
+    }
+
+    function optionClickHandler(e) {
+        const targetDiv = e.currentTarget;
+        const qidx = parseInt(targetDiv.dataset.qidx);
+        const optidx = parseInt(targetDiv.dataset.optidx);
+        if (answerStatus[qidx]) return; // đã trả lời rồi không cho sửa
+        const q = questions[qidx];
+        userAnswers[qidx] = optidx;
+        answerStatus[qidx] = true;
+        renderQuestions(); // re-render để cập nhật màu + feedback
+    }
+
+    function updateScore() {
+        let correctCount = 0;
+        for (let i = 0; i < questions.length; i++) {
+            if (answerStatus[i] && userAnswers[i] === questions[i].correct) correctCount++;
+        }
+        document.getElementById("scoreDisplay").innerHTML = `✅ Điểm số: ${correctCount} / ${questions.length}`;
+    }
+
+    function resetAll() {
+        userAnswers.fill(null);
+        answerStatus.fill(false);
+        renderQuestions();
+    }
+
+    function downloadHTML() {
+        // Lấy toàn bộ nội dung trang hiện tại kèm trạng thái (có thể lưu cả tiến độ)
+        const htmlContent = document.documentElement.outerHTML;
+        const blob = new Blob([htmlContent], { type: "text/html" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "de_thi_dao_ham_ham_an_mathjax.html";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    // Filter buttons
+    const filterBtns = document.querySelectorAll(".filter-btn");
+    filterBtns.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            filterBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentFilter = btn.dataset.filter;
+            renderQuestions();
+        });
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", resetAll);
+    document.getElementById("downloadBtn").addEventListener("click", downloadHTML);
+
+    // initial render
+    renderQuestions();
+</script>
+</body>
+</html>
