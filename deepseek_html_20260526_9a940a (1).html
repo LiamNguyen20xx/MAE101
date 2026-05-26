@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đề thi trắc nghiệm - Simpson & Giải tích số</title>
+    <!-- MathJax -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Roboto', sans-serif;
+        }
+        body {
+            background: #eef2f7;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 28px;
+            padding: 20px 30px 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #1e466e;
+            border-bottom: 3px solid #ffb347;
+            display: inline-block;
+            width: auto;
+            margin: 0 auto 20px;
+        }
+        .title-wrap {
+            text-align: center;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background: #f8f9fc;
+            padding: 12px 20px;
+            border-radius: 40px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-weight: bold;
+        }
+        .stat-card {
+            background: white;
+            padding: 6px 16px;
+            border-radius: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .question-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-left: 8px solid #3b82f6;
+            transition: 0.1s;
+        }
+        .question-card.correct {
+            border-left-color: #10b981;
+            background: #f0fdf4;
+        }
+        .question-card.wrong {
+            border-left-color: #ef4444;
+            background: #fef2f2;
+        }
+        .question-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .badge {
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-weight: normal;
+        }
+        .badge.easy { background: #d1fae5; color: #065f46; }
+        .badge.medium { background: #fed7aa; color: #9b2c1d; }
+        .badge.hard { background: #fee2e2; color: #b91c1c; }
+        .badge.theory { background: #dbeafe; color: #1e40af; }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f9fafb;
+            padding: 10px 16px;
+            border-radius: 60px;
+            cursor: pointer;
+            border: 1px solid #e4e7eb;
+        }
+        .option:hover {
+            background: #eef2ff;
+        }
+        .feedback {
+            margin-top: 15px;
+            background: #f1f5f9;
+            padding: 14px 18px;
+            border-radius: 20px;
+            display: none;
+            border-left: 5px solid #3b82f6;
+        }
+        .feedback.show {
+            display: block;
+        }
+        .answer-correct {
+            color: #0a7e3c;
+            font-weight: bold;
+        }
+        .tip {
+            background: #fff7e5;
+            padding: 8px 12px;
+            border-radius: 16px;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        button {
+            background: #1e466e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #0f2f4f;
+        }
+        .download-btn {
+            background: #2c7a4d;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: #5b6e8c;
+        }
+        .math {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title-wrap">
+        <h1>📘 Đề thi trắc nghiệm: Simpson & Giải tích số</h1>
+        <p>20 câu (5 lý thuyết + 15 bài tập) — có giải thích + mẹo làm nhanh</p>
+    </div>
+    <div class="stats">
+        <div class="stat-card">📊 Tổng câu: 20</div>
+        <div class="stat-card">✅ Đã trả lời: <span id="answeredCount">0</span></div>
+        <div class="stat-card">🎯 Đúng: <span id="correctCount">0</span></div>
+        <div class="stat-card">❌ Sai: <span id="wrongCount">0</span></div>
+    </div>
+    <div id="questionsContainer"></div>
+    <div style="display: flex; justify-content: center; gap: 15px;">
+        <button id="resetBtn">⟳ Làm lại toàn bộ</button>
+        <button id="downloadBtn" class="download-btn">📥 Tải file đề thi (HTML)</button>
+    </div>
+    <div class="footer">💡 Chọn đáp án → xanh (đúng) / đỏ (sai) + đáp án + giải thích + mẹo. MathJax hỗ trợ công thức.</div>
+</div>
+
+<script>
+    // --------------------- 20 CÂU HỎI -------------------------
+    const questions = [
+        // Lý thuyết (5 câu)
+        { text: "Phương pháp Simpson xấp xỉ tích phân bằng cách nào?", options: ["Đường thẳng", "Đường cong parabol bậc hai", "Đường bậc ba", "Hình chữ nhật"], correct: 1, level: "theory", explanation: "Simpson dùng parabol (bậc hai) đi qua 3 điểm.", tip: "Simpson = Parabol." },
+        { text: "Công thức Simpson 1/3 cho đoạn \\([x_0, x_2]\\) với \\(h = (x_2-x_0)/2\\) là:", options: ["\\(\\frac{h}{2}[f(x_0)+f(x_2)]\\)", "\\(\\frac{h}{3}[f(x_0)+4f(x_1)+f(x_2)]\\)", "\\(\\frac{2h}{3}[f(x_0)+f(x_1)+f(x_2)]\\)", "\\(h[f(x_0)+f(x_2)]\\)"], correct: 1, level: "theory", explanation: "Công thức chuẩn Simpson: h/3 * (f₀+4f₁+f₂).", tip: "Nhớ '1-4-1' chia 3." },
+        { text: "Khi dùng công thức Simpson tổng quát, số đoạn con \\(n\\) phải là:", options: ["Số lẻ", "Số chẵn", "Bất kỳ", "Bội của 3"], correct: 1, level: "theory", explanation: "Vì mỗi bước Simpson áp dụng trên 2 đoạn (3 điểm), cần n chẵn.", tip: "Simpson cần n CHẴN." },
+        { text: "Phương pháp Simpson cho kết quả chính xác tuyệt đối với đa thức bậc tối đa:", options: ["Bậc 1", "Bậc 2", "Bậc 3", "Bậc 4"], correct: 2, level: "theory", explanation: "Sai số liên quan f⁴, đa thức ≤3 có f⁴=0.", tip: "Chính xác đến bậc 3." },
+        { text: "Sai số của phương pháp Simpson tỉ lệ với \\(h\\) mũ mấy?", options: ["\\(O(h)\\)", "\\(O(h^2)\\)", "\\(O(h^3)\\)", "\\(O(h^4)\\)"], correct: 3, level: "theory", explanation: "Sai số O(h⁴) — rất nhỏ.", tip: "h giảm nửa → sai số giảm 16 lần." },
+        
+        // Bài tập DỄ (5 câu)
+        { text: "Tính \\(\\int_0^2 x^2 dx\\) bằng Simpson với n=2 (h=1), biết f(0)=0, f(1)=1, f(2)=4.", options: ["2.0", "2.6667", "3.0", "4.0"], correct: 1, level: "easy", explanation: "\\( \\frac{1}{3}(0 + 4\\cdot1 + 4) = \\frac{8}{3} \\approx 2.6667\\)", tip: "Đa thức bậc 2 → Simpson chính xác." },
+        { text: "Tính \\(\\int_0^2 (3x^2+1)dx\\) với h=1, f(0)=1, f(1)=4, f(2)=13.", options: ["10", "12", "14", "8"], correct: 0, level: "easy", explanation: "\\(\\frac{1}{3}(1+4\\cdot4+13)=30/3=10\\)", tip: "1-4-1 rồi nhân h/3." },
+        { text: "Tính \\(\\int_0^1 e^x dx\\) xấp xỉ Simpson n=2 (h=0.5): f(0)=1, f(0.5)=1.64872, f(1)=2.71828.", options: ["1.71828", "1.71886", "1.720", "1.71"], correct: 1, level: "easy", explanation: "\\(0.5/3*(1+4*1.64872+2.71828)=1.71886\\)", tip: "Sai số rất nhỏ." },
+        { text: "Số đoạn chẵn tối thiểu để áp dụng Simpson tổng quát là:", options: ["1", "2", "3", "4"], correct: 1, level: "easy", explanation: "n=2 là nhỏ nhất.", tip: "n ≥ 2 và chẵn." },
+        { text: "Với n=4, chỉ số nào được nhân hệ số 2 trong công thức Simpson?", options: ["i=1,3", "i=2", "i=2", "i=1,2,3"], correct: 1, level: "easy", explanation: "x₂ (i=2) là điểm chẵn trong cùng nhân 2.", tip: "Chẵn giữa nhân 2." },
+        
+        // Bài tập TRUNG BÌNH (5 câu)
+        { text: "Tính \\(\\int_0^1 \\frac{4}{1+x^2}dx\\) (≈ π) với n=4, h=0.25, f: 4; 3.76471; 3.2; 2.56; 2. Kết quả?", options: ["3.1416", "3.1428", "3.1400", "3.14"], correct: 0, level: "medium", explanation: "\\(\\frac{0.25}{3}[4+2+4(3.76471+2.56)+2\\cdot3.2] = 3.14157\\)", tip: "Cực kỳ chính xác, gần π." },
+        { text: "Cho bảng: f(0)=1, f(0.5)=0.938, f(1)=0.765, f(1.5)=0.511, f(2)=0.223. Simpson n=4 (h=0.5) cho kết quả?", options: ["1.025", "1.198", "1.425", "1.462"], correct: 2, level: "medium", explanation: "\\(0.5/3[1+0.223+4(0.938+0.511)+2\\cdot0.765]=1.4248≈1.425\\)", tip: "Cộng đúng hệ số lẻ/chẵn." },
+        { text: "Công thức sai số của Simpson tổng quát có dạng:", options: ["\\(\\frac{(b-a)h^2}{12}f''(\\xi)\\)", "\\(\\frac{(b-a)h^4}{180}f^{(4)}(\\xi)\\)", "\\(\\frac{h}{2}(f(a)+f(b))\\)", "\\(O(h)\\)"], correct: 1, level: "medium", explanation: "Sai số tỉ lệ h⁴ và đạo hàm bậc 4.", tip: "Nhớ h⁴/180." },
+        { text: "Nếu tăng số đoạn n lên gấp đôi (h giảm một nửa), sai số Simpson giảm xấp xỉ:", options: ["4 lần", "8 lần", "16 lần", "2 lần"], correct: 2, level: "medium", explanation: "Vì (1/2)⁴ = 1/16.", tip: "h giảm nửa → sai số giảm 16 lần." },
+        { text: "So với hình thang, để đạt cùng độ chính xác, Simpson cho phép dùng bước h:", options: ["Lớn hơn", "Nhỏ hơn", "Bằng nhau", "Không xác định"], correct: 0, level: "medium", explanation: "Simpson chính xác hơn nên có thể dùng h lớn hơn (ít điểm hơn).", tip: "Tiết kiệm điểm tính." },
+        
+        // Bài tập KHÓ (5 câu)
+        { text: "Tính \\(\\int_0^{\\pi/2} \\sin x dx\\) bằng Simpson n=2, h=π/4≈0.7854, f(0)=0, f(π/4)=0.7071, f(π/2)=1.", options: ["0.999", "1.0023", "0.998", "1.000"], correct: 1, level: "hard", explanation: "\\(\\frac{0.7854}{3}(0+4*0.7071+1)=1.0023\\), giá trị thật=1.", tip: "Sai số nhỏ dù chỉ 2 đoạn." },
+        { text: "Tính \\(\\int_1^3 \\ln x dx\\) Simpson n=4, h=0.5: ln1=0, ln1.5=0.4055, ln2=0.6931, ln2.5=0.9163, ln3=1.0986.", options: ["1.298", "1.295", "1.287", "1.302"], correct: 1, level: "hard", explanation: "\\(0.5/3[0+1.0986+4(0.4055+0.9163)+2*0.6931]=1.295\\)", tip: "Hàm log vẫn cho độ chính xác tốt." },
+        { text: "Với n=6, hệ số của f(x₂) và f(x₄) trong công thức Simpson tổng quát là:", options: ["2 và 2", "4 và 4", "2 và 4", "4 và 2"], correct: 0, level: "hard", explanation: "Các chỉ số chẵn (không kể 0 và n) đều hệ số 2.", tip: "Chẵn giữa → 2, lẻ → 4." },
+        { text: "Tính \\(\\int_0^1 \\sqrt{1+x^3} dx\\) với n=4, nhận xét đúng về sai số:", options: ["Sai số = 0", "Sai số rất nhỏ O(h⁴)", "Không áp dụng được", "Sai số lớn"], correct: 1, level: "hard", explanation: "Hàm trơn, Simpson đạt độ chính xác cao.", tip: "Hàm trơn thì Simpson cực tốt." },
+        { text: "Khi nào nên ưu tiên dùng Simpson thay vì hình thang?", options: ["Cần độ chính xác cao & hàm khả vi bậc 4", "Luôn luôn", "Khi hàm không khả vi", "Khi n lẻ"], correct: 0, level: "hard", explanation: "Simpson chính xác hơn nếu hàm đủ trơn.", tip: "Hàm trơn + yêu cầu chính xác → Simpson." }
+    ];
+
+    let userAnswers = new Array(20).fill(null);
+    let answerStatus = new Array(20).fill(null);
+
+    function renderQuestions() {
+        const container = document.getElementById('questionsContainer');
+        container.innerHTML = '';
+        
+        questions.forEach((q, idx) => {
+            let levelClass = "";
+            let levelText = "";
+            if (q.level === "theory") { levelClass = "badge theory"; levelText = "Lý thuyết"; }
+            else if (q.level === "easy") { levelClass = "badge easy"; levelText = "Bài tập dễ"; }
+            else if (q.level === "medium") { levelClass = "badge medium"; levelText = "Bài tập TB"; }
+            else { levelClass = "badge hard"; levelText = "Bài tập khó"; }
+            
+            const card = document.createElement('div');
+            card.className = `question-card ${answerStatus[idx] === 'correct' ? 'correct' : (answerStatus[idx] === 'wrong' ? 'wrong' : '')}`;
+            card.setAttribute('data-idx', idx);
+            
+            // Nội dung câu hỏi + options
+            card.innerHTML = `
+                <div class="question-title">
+                    <span><strong>Câu ${idx+1}:</strong> <span class="math">${q.text}</span></span>
+                    <span class="${levelClass}">${levelText}</span>
+                </div>
+                <div class="options" data-qidx="${idx}">
+                    ${q.options.map((opt, optIdx) => `
+                        <div class="option" data-optidx="${optIdx}">
+                            <input type="radio" name="q${idx}" value="${optIdx}" id="q${idx}_${optIdx}" ${userAnswers[idx] === optIdx ? 'checked' : ''}>
+                            <label for="q${idx}_${optIdx}"><span class="math">${String.fromCharCode(65+optIdx)}. ${opt}</span></label>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="feedback" id="fb${idx}">
+                    <div class="answer-correct">✅ Đáp án đúng: <span class="math">${q.options[q.correct]}</span></div>
+                    <div>📖 Giải thích: ${q.explanation}</div>
+                    <div class="tip">💡 Mẹo nhanh: ${q.tip}</div>
+                </div>
+            `;
+            
+            container.appendChild(card);
+            
+            // Gắn sự kiện cho từng radio
+            const radios = card.querySelectorAll('input[type="radio"]');
+            radios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    const selectedVal = parseInt(e.target.value);
+                    userAnswers[idx] = selectedVal;
+                    const isCorrect = (selectedVal === q.correct);
+                    answerStatus[idx] = isCorrect ? 'correct' : 'wrong';
+                    
+                    // Cập nhật màu border + background
+                    if (isCorrect) {
+                        card.classList.add('correct');
+                        card.classList.remove('wrong');
+                    } else {
+                        card.classList.add('wrong');
+                        card.classList.remove('correct');
+                    }
+                    
+                    // Hiện feedback
+                    const fbDiv = card.querySelector('.feedback');
+                    fbDiv.classList.add('show');
+                    updateStats();
+                    
+                    // Gọi MathJax để render lại nếu có công thức mới (nhưng không cần vì chỉ text)
+                    if (window.MathJax) {
+                        MathJax.typesetPromise();
+                    }
+                });
+            });
+            
+            // Nếu đã chọn trước đó thì hiện feedback
+            if (userAnswers[idx] !== null) {
+                const fbDiv = card.querySelector('.feedback');
+                fbDiv.classList.add('show');
+            }
+        });
+        
+        // MathJax render toàn bộ công thức lần đầu
+        if (window.MathJax) {
+            MathJax.typesetPromise();
+        }
+        updateStats();
+    }
+    
+    function updateStats() {
+        let answered = userAnswers.filter(a => a !== null).length;
+        let correct = 0;
+        for (let i = 0; i < questions.length; i++) {
+            if (userAnswers[i] !== null && userAnswers[i] === questions[i].correct) correct++;
+        }
+        document.getElementById('answeredCount').innerText = answered;
+        document.getElementById('correctCount').innerText = correct;
+        document.getElementById('wrongCount').innerText = answered - correct;
+    }
+    
+    function resetAll() {
+        userAnswers.fill(null);
+        answerStatus.fill(null);
+        renderQuestions();
+    }
+    
+    function downloadHTML() {
+        const htmlContent = document.documentElement.outerHTML;
+        const blob = new Blob([htmlContent], {type: 'text/html'});
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = 'de_thi_trac_nghiem_simpson_20cau.html';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+    
+    document.getElementById('resetBtn').addEventListener('click', resetAll);
+    document.getElementById('downloadBtn').addEventListener('click', downloadHTML);
+    
+    // Khởi chạy
+    renderQuestions();
+</script>
+</body>
+</html>
